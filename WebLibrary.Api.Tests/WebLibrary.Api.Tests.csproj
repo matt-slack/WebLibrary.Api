@@ -135,6 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\LibraryControllerTest.cs" />
+    <Compile Include="DAL\BookAgentTest.cs" />
+    <Compile Include="DAL\ProxyTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

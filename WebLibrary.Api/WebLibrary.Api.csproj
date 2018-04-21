@@ -149,10 +149,15 @@
     <Compile Include="Controllers\LibraryController.cs" />
     <Compile Include="DAL\BookAgent.cs" />
     <Compile Include="DAL\IBookAgent.cs" />
+    <Compile Include="DAL\IParser.cs" />
+    <Compile Include="DAL\IProxy.cs" />
+    <Compile Include="DAL\Parser.cs" />
+    <Compile Include="DAL\Proxy.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\BookSupply.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

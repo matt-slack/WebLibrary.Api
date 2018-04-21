@@ -3,10 +3,9 @@ using Moq;
 using MyTested.WebApi;
 using Newtonsoft.Json;
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Web.Http.Results;
 using WebLibrary.Api.Controllers;
 using WebLibrary.Api.DAL;
 using WebLibrary.Api.Models;
@@ -16,47 +15,55 @@ namespace WebLibrary.Api.Tests.Controllers
     [TestFixture]
     public class LibraryControllerTest
     {
+        private Fixture _fixture;
+        private Mock<IBookAgent> _mockBookAgent;
+        private BookSupply _books;
+
+        [SetUp]
+        public void Setup()
+        {
+            _fixture = new Fixture();
+            _mockBookAgent = new Mock<IBookAgent>();
+            _books = _fixture.Create<BookSupply>();
+            _mockBookAgent.Setup(x => x.GetBooks())
+                .Returns(_books);
+        }
+
         [Test]
         public void GetAllBooks_ShouldHaveCorrectRoute()
         {
-            MyWebApi.Routes().ShouldMap("/books").To<LibraryController>(x => x.GetAllBooks());
+            MyWebApi.Routes().ShouldMap("/books")
+                .To<LibraryController>(x => x.GetAllBooks());
         }
 
         [Test]
         public void GetAllBooks_ReturnsJSONObject()
         {
-            MyWebApi.Controller<LibraryController>().Calling(x => x.GetAllBooks())
-                .ShouldReturn().Json().WithResponseModelOfType<List<Book>>();
-        }
-        
-        [Test]
-        public void GetAllBooks_CallsBookAgentGetBooks()
-        {
-            var mockBookAgent = new Mock<IBookAgent>();
-            var fixture = new Fixture();
-            var books = fixture.CreateMany<Book>();
-            mockBookAgent.Setup(x => x.GetBooks()).Returns(books.ToList());
-            var controller = new LibraryController(mockBookAgent.Object);
-
-            controller.GetAllBooks();
-
-            mockBookAgent.Verify(x => x.GetBooks());
+            MyWebApi.Controller<LibraryController>()
+                .Calling(x => x.GetAllBooks())
+                .ShouldReturn()
+                .Json()
+                .WithResponseModelOfType<BookSupply>();
         }
 
         [Test]
         public void GetAllBooks_ReturnsBookList_AsJSON()
         {
-            var mockBookAgent = new Mock<IBookAgent>();
-            var fixture = new Fixture();
-            var books = fixture.CreateMany<Book>();
-            var enumerable = books.ToList();
-            mockBookAgent.Setup(x => x.GetBooks()).Returns(enumerable.ToList());
-            var controller = new LibraryController(mockBookAgent.Object);
-            var expectedResult = JsonConvert.SerializeObject(enumerable.ToList());
+            MyWebApi.Controller(() => new LibraryController(_mockBookAgent.Object))
+                .Calling(x => x.GetAllBooks())
+                .ShouldReturn()
+                .Json()
+                .WithResponseModel(_books);
+        }
 
-            var actual = controller.GetAllBooks();
+        [Test]
+        public void GetAllBooks_CallsBookAgentGetBooks()
+        {
+            var controller = new LibraryController(_mockBookAgent.Object);
 
-            Assert.That(expectedResult, Is.EqualTo(actual));
+            controller.GetAllBooks();
+
+            _mockBookAgent.Verify(x => x.GetBooks());
         }
     }
 }

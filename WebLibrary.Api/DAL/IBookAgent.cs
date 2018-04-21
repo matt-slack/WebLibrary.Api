@@ -5,6 +5,6 @@ namespace WebLibrary.Api.DAL
 {
     public interface IBookAgent
     {
-        List<Book> GetBooks();
+        BookSupply GetBooks();
     }
 }

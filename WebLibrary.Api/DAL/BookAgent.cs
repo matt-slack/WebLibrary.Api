@@ -1,16 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using WebLibrary.Api.Models;
 
 namespace WebLibrary.Api.DAL
 {
     public class BookAgent : IBookAgent
     {
-        public List<Book> GetBooks()
+        private readonly IProxy _proxy;
+        private readonly IParser _parser;
+
+        public BookAgent()
         {
-            return new List<Book>();
+            _proxy = new Proxy();
+            _parser = new Parser();
+        }
+
+        public BookAgent(IProxy proxy, IParser parser)
+        {
+            _proxy = proxy;
+            _parser = parser;            
+        }
+
+        public BookSupply GetBooks()
+        {
+            return _parser.Parse(_proxy.FetchData());
         }
     }
 }
