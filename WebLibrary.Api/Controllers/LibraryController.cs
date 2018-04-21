@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Web.Http;
+﻿using System.Web.Http;
 using WebLibrary.Api.DAL;
-using WebLibrary.Api.Models;
 
 namespace WebLibrary.Api.Controllers
 {
@@ -21,9 +19,7 @@ namespace WebLibrary.Api.Controllers
 
         [Route("books/")]
         [HttpGet]
-        public IHttpActionResult GetAllBooks()
-        {
-            return Json(_bookAgent.GetBooks());
-        }
+        public IHttpActionResult GetAllBooks() => 
+            Json(_bookAgent.GetBooks());
     }
 }
